@@ -6,6 +6,7 @@ const Auth = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [newAccount, setNewAccount] = useState(true);
+    const [error, setError] = useState("");
 
     const onChange = (event) => {
         const {
@@ -17,6 +18,10 @@ const Auth = () => {
             setPassword(value);
         }
     };
+    const toggleAccount = () => {
+        setNewAccount((prev)=> !prev)
+        console.log(newAccount)
+    }
 
     const onSubmit = async (event) => {
         event.preventDefault();
@@ -27,9 +32,9 @@ const Auth = () => {
             } else {
                  data = await signInWithEmailAndPassword(authService, email, password);
             }
-            console.log(data)
         }catch(error){
-            console.log(error)
+            setError(error.message)
+            //console.log('234:'+error)
         }
 
 
@@ -41,7 +46,9 @@ const Auth = () => {
                 <input name="password" type="password" placeholder="Password" required value={password}
                        onChange={onChange}/>
                 <input type="submit" placeholder="LogIn" required value={newAccount ? "Create Account" : "Log In"}/>
+                <div>{error}</div>
             </form>
+            <span onClick={toggleAccount}>{newAccount ? "Sign in" : "Create Account"}</span>
             <div>
                 <button>Countinue with Google</button>
                 <button>Countinue with Github</button>
