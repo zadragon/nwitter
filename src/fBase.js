@@ -3,6 +3,8 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
 import { getAuth } from "firebase/auth";
+import "firebase/database";
+import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -22,3 +24,5 @@ export const firebaseInstance = firebase;
 
 // export const authService = firebase.auth()
 export const authService = getAuth();
+export const dbService = getFirestore();
+
