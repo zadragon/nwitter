@@ -10,7 +10,6 @@ const Home = () => {
     const getNweets = async () => {
         const querySnapshot = await getDocs(collection(dbService, "nweets"));
         querySnapshot.forEach((doc) => {
-            console.log({...doc.data()})
             const nweetObj = {
                 ...doc.data(),
                 id: doc.id,
@@ -25,7 +24,7 @@ const Home = () => {
     const onSubmit = async (event) => {
         event.preventDefault();
         await addDoc(collection(dbService, "nweets"),{
-            nweet,
+            text:nweet,
             createdAt:Date.now()
         });
         setNweet("")
