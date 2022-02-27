@@ -5,7 +5,7 @@ import Home from "routes/Home";
 import Navigation from "./Navigation";
 import Profile from "routes/Profile";
 
-function AppRouter({isLoggedIn}) {
+function AppRouter({isLoggedIn, userObj}) {
 
     return (
         <Router>
@@ -15,7 +15,7 @@ function AppRouter({isLoggedIn}) {
                     (
                         <>
                             <Route exact path="/">
-                                <Home/>
+                                <Home userObj={userObj} />
                             </Route>
                             <Route exact path="/profile">
                                 <Profile/>
