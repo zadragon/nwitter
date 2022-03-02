@@ -3,14 +3,14 @@ import {addDoc, getDocs, collection, onSnapshot} from "firebase/firestore"
 import {dbService, storageService} from "../fBase";
 import { v4 as uuidv4 } from 'uuid';
 import Nweet from "../components/Nweet";
-import { ref, uploadString } from "@firebase/storage";
+import { ref, uploadString, getDownloadURL } from "@firebase/storage";
 
 
 
 const Home = ({userObj}) => {
     const [nweet, setNweet] = useState("");
     const [nweets, setNweets] = useState([]);
-    const [attachment, setAttachment] = useState(null);
+    const [attachment, setAttachment] = useState("");
 
     useEffect(()=>{
         onSnapshot(collection(dbService, "nweets"),(snapshot)=>{
@@ -24,19 +24,21 @@ const Home = ({userObj}) => {
 
     const onSubmit = async (event) => {
         event.preventDefault();
-        /*await addDoc(collection(dbService, "nweets"),{
-            text:nweet,
-            createdAt:Date.now(),
-            creatorId:userObj.uid
-        });
-        setNweet("")*/
-
-        const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
-        const response = await uploadString(fileRef, attachment, "data_url");
-        console.log(response);
-
-
-
+        let attachmentUrl = ""
+        if(attachment != ""){
+            const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+            const response = await uploadString(fileRef, attachment, "data_url");
+            attachmentUrl = await getDownloadURL(response.ref);
+        }
+        const nweetObj = {
+            text: nweet,
+            createdAt: Date.now(),
+            creatorId: userObj.uid,
+            attachmentUrl,
+        }
+        addDoc(collection(dbService, "nweets"),nweetObj);
+        setNweet("");
+        setAttachment("");
     }
     const onChange = (event) => {
         const {target: {value}} = event;
@@ -52,7 +54,7 @@ const Home = ({userObj}) => {
         }
         reader.readAsDataURL(theFile);
     }
-    const onClearAttachment = () => setAttachment(null)
+    const onClearAttachment = () => setAttachment("")
     return (
         <div>
             <form onSubmit={onSubmit}>
