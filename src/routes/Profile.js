@@ -2,9 +2,10 @@ import React, {useEffect, useState} from 'react';
 import { collection, getDocs, query, where } from "@firebase/firestore";
 import { updateProfile } from "@firebase/auth";
 import {useHistory} from "react-router-dom";
-import {authService, dbService} from "../fBase";
+import {authService, dbService} from "fBase";
 
-const Profile = ({userObj}) => {
+const Profile = ({refreshUser, userObj}) => {
+    console.log(userObj)
     const history = useHistory();
     const [newDisplayName, setNewDisplayName] = useState(userObj.displayName)
     const onLogoutClick = () => {
@@ -19,8 +20,13 @@ const Profile = ({userObj}) => {
     }
     const onSubmit = async (event) => {
         event.preventDefault();
-        if (userObj.displayName !== newDisplayName) {
+/*        if (userObj.displayName !== newDisplayName) {
             await updateProfile(userObj, { displayName: newDisplayName });
+        }*/
+
+        if(userObj.displayName !== newDisplayName){
+            await updateProfile(authService.currentUser, { displayName: newDisplayName });
+            refreshUser();
         }
     }
     const getMyNweets = async () => {
